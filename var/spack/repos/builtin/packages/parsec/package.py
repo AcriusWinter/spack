@@ -106,13 +106,20 @@ class Parsec(CMakePackage, CudaPackage):
 
     def test(self):
         """Compile and run a user program with the installed library"""
-        with working_dir(join_path(self.install_test_root, "contrib/build_with_parsec")):
-            self.run_test(
-                "cmake", options=["."], purpose="Check if CMake can find PaRSEC and its targets"
-            )
-            self.run_test("make", purpose="Check if tests can compile")
-            self.run_test("./dtd_test_allreduce")
-            self.run_test("./write_check")
+        install_tree(join_path(self.install_test_root, "contrib"), ".")
+        #with working_dir("contrib/build_with_parsec"):
+        if True:
+            cmake = self.spec["cmake"].command
+            cmake(".")
+            make()
+            #add in cmake and make, cmake curr dir, make nothing
+            with test_allreduce(self, "test series reduce", "purpose"):
+                exe = which("./dtd_test_allreduce")
+                exe()
+            with test_write_check(self, "test series reduce", "purpose"):
+                exe = which("./write_check")
+                exe()
+            make("clean")
 
     @run_after("install")
     def cache_test_sources(self):
