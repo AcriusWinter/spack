@@ -196,3 +196,29 @@ class ParallelNetcdf(AutotoolsPackage):
                 )
                 break
         self.run_test("rm", ["-f", test_exe], work_dir=test_dir)
+
+    def run_test_run(self, mpiexe):
+        test_dir = join_path(self.test_suite.current_test_cache_dir, self.examples_src_dir)
+        # pnetcdf has many examples to serve as a suitable smoke check.
+        # column_wise was chosen based on the E4S test suite. Other
+        # examples should work as well.
+        test_exe = "column_wise"
+        options = [
+            "{0}.cpp".format(test_exe),
+            "-o",
+            test_exe,
+            "-lpnetcdf",
+            "-L{0}".format(self.prefix.lib),
+            "-I{0}".format(self.prefix.include),
+        ]
+        reason = "test: compiling and linking pnetcdf example"
+        # if os.path.isfile(mpiexe):
+        with working_dir(test_dir):
+            mpiexe = which(join_path(self.prefix.bin, mpiexe))
+            options = ["-n", "1", test_exe]
+            mpiexe(*options)
+        # else:
+        #    assert False, "wrong"
+
+    def not_test_one(self):
+        self.run_test_run(self.spec["mpi"].prefix.bin.srun)
