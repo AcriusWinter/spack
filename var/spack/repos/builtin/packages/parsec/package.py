@@ -107,8 +107,8 @@ class Parsec(CMakePackage, CudaPackage):
     def test(self):
         """Compile and run a user program with the installed library"""
         install_tree(join_path(self.install_test_root, "contrib"), ".")
-        #with working_dir("contrib/build_with_parsec"):
-        if True:
+        with working_dir("contrib/build_with_parsec"):
+            #if True:
             cmake = self.spec["cmake"].command
             cmake(".")
             make()
