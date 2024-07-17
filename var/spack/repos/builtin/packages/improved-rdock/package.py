@@ -68,15 +68,15 @@ class ImprovedRdock(MakefilePackage):
         exe(*opts)
 
     def test_rbcavity(self):
-        """Check rbcavity"""
+        """Calculate docking cavities"""
         self.run_rdock_test("rbcavity", ["-r", "1sj0_rdock.prm", "-was"])
 
-    def test_bash(self):
-        """Test bash"""
+    def test_sh(self):
+        """Sort the output of bash script"""
         self.run_rdock_test("bash", [join_path(self.test_suite.current_test_data_dir, "test.sh")])
 
-    def test_mpi(self):
-        """Use mpirun to run rdock in parallel"""
+    def test_rbdock(self):
+        """Perform docking runs"""
         opts = [
             self.prefix.bin.rbdock,
             "-r",
